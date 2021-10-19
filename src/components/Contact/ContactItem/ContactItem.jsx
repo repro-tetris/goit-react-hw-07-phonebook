@@ -1,11 +1,17 @@
 import PropTypes from "prop-types";
 import { StyledContact } from "./ContactItem.styled";
+import { useDelContactMutation } from "../../../redux/contactsSlice";
+function ContactItem({ contact: { id, name, number } }) {
+  const [deleteContact, { isLoading: isDeleting }] = useDelContactMutation();
 
-function ContactItem({ contact: { name, number }, onDelete }) {
+  const deleteHandle = () => deleteContact(id);
+
   return (
     <StyledContact>
       {name}: {number}
-      <button onClick={onDelete}>delete</button>
+      <button onClick={deleteHandle} disabled={isDeleting}>
+        {isDeleting ? "deleting..." : "delete"}{" "}
+      </button>
     </StyledContact>
   );
 }

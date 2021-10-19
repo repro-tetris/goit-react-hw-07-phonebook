@@ -1,31 +1,26 @@
 import { ContactItem } from "../../Contact";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-
-import {
-  useGetContactsQuery,
-  useDelContactMutation,
-} from "../../../redux/contactsSlice";
+import { useGetContactsQuery } from "../../../redux/contactsSlice";
 
 const ContactList = () => {
-  const filter = useSelector((state) => state.contacts.filter);
-  const { data: contacts = [], isError, error } = useGetContactsQuery();
-  const [deleteContact] = useDelContactMutation();
+  const filter = useSelector((state) => state.filter);
+  const {
+    data: contacts = [],
+    isError,
+    error,
+    isFetching,
+  } = useGetContactsQuery();
 
   const filteredContacts = getFiltered(filter, contacts);
   if (isError) return <div>An error has occurred! {error.data}</div>;
 
   return (
     <div>
+      {isFetching && <p>Loading...</p>}
       <ul>
         {filteredContacts.map((contact) => {
-          return (
-            <ContactItem
-              key={contact.id}
-              contact={contact}
-              onDelete={() => deleteContact(contact.id)}
-            />
-          );
+          return <ContactItem key={contact.id} contact={contact} />;
         })}
       </ul>
     </div>

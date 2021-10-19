@@ -6,7 +6,7 @@ import { useAddContactMutation } from "../../redux/contactsSlice";
 function ContactForm() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [addContact] = useAddContactMutation();
+  const [addContact, { isLoading: isAdding }] = useAddContactMutation();
   const handleChange = ({ target: { name, value } }) => {
     if (name === "name") {
       setName(value);
@@ -53,7 +53,11 @@ function ContactForm() {
           value={number}
         />
       </Label>
-      <input type="submit" value="Add contact" />
+      <input
+        disabled={isAdding}
+        type="submit"
+        value={isAdding ? "Adding contact..." : "Add contact"}
+      />
     </form>
   );
 }
