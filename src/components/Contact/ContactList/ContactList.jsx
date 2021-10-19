@@ -1,15 +1,19 @@
 import { ContactItem } from "../../Contact";
 import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
-import { delContact } from "../../../redux/contacts/items/contacts-item-actions";
+import { useSelector } from "react-redux";
+
+import {
+  useGetContactsQuery,
+  useDelContactMutation,
+} from "../../../redux/contactsSlice";
 
 const ContactList = () => {
-  const contacts = useSelector((state) => state.contacts.items);
   const filter = useSelector((state) => state.contacts.filter);
+  const { data: contacts = [], isError, error } = useGetContactsQuery();
+  const [deleteContact] = useDelContactMutation();
 
   const filteredContacts = getFiltered(filter, contacts);
-
-  const dispatch = useDispatch();
+  if (isError) return <div>An error has occurred! {error.data}</div>;
 
   return (
     <div>
@@ -19,7 +23,7 @@ const ContactList = () => {
             <ContactItem
               key={contact.id}
               contact={contact}
-              onDelete={() => dispatch(delContact(contact.id))}
+              onDelete={() => deleteContact(contact.id)}
             />
           );
         })}

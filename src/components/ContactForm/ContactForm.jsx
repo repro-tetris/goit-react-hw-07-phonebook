@@ -1,13 +1,12 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Label } from "./ContactForm.styled";
-import { connect } from "react-redux";
-import { addContact } from "../../redux/contacts/items/contacts-item-actions";
+import { useAddContactMutation } from "../../redux/contactsSlice";
 
-function ContactForm(props) {
+function ContactForm() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-
+  const [addContact] = useAddContactMutation();
   const handleChange = ({ target: { name, value } }) => {
     if (name === "name") {
       setName(value);
@@ -18,7 +17,7 @@ function ContactForm(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.onSubmit({ name, number });
+    addContact({ name, number });
     reset();
   };
 
@@ -63,8 +62,4 @@ ContactForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  onSubmit: (contact) => dispatch(addContact(contact)),
-});
-// export default ContactForm;
-export default connect(null, mapDispatchToProps)(ContactForm);
+export default ContactForm;

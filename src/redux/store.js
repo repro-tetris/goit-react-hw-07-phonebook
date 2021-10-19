@@ -1,23 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import contactReducer from "./contacts";
-import { loadContacts, saveContacts } from "../components/utils/storage";
-
-const persistedState = {
-  contacts: {
-    items: loadContacts(),
-  },
-};
+import { contactsApi } from "./contactsSlice";
 
 const store = configureStore({
   reducer: {
     contacts: contactReducer,
+    [contactsApi.reducerPath]: contactsApi.reducer,
   },
-  preloadedState: persistedState,
+  middleware: (getDefaultMiddleware) => [
+    ...getDefaultMiddleware(),
+    contactsApi.middleware,
+  ],
   devTools: process.env.NODE_ENV === "development",
 });
 
-store.subscribe(() => {
-  saveContacts(store.getState().contacts.items);
-});
+setupListeners(store.dispatch);
 
 export default store;
